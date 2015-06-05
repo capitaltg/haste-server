@@ -310,7 +310,7 @@ haste.prototype.configureButtons = function() {
       shortcutDescription: 'control + shift + r',
       action: function() {
         var short_key = substringAfter(_this.doc.key,apppath);
-        window.location.href = '/raw/' + short_key;
+	window.location.href = apppath + '/raw' + short_key;
       }
     },
     {
