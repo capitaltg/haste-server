@@ -1,3 +1,10 @@
+var substringAfter = function(string, sub){
+  var n = string.indexOf(sub);
+  return string.substring(n + sub.length);
+}
+
+var apppath = '/haste';
+
 ///// represents a single document
 
 var haste_document = function() {
@@ -16,7 +23,8 @@ haste_document.prototype.htmlEscape = function(s) {
 // Get this document from the server and lock it here
 haste_document.prototype.load = function(key, callback, lang) {
   var _this = this;
-  $.ajax('/documents/' + key, {
+  var short_key = substringAfter(key,'haste/');
+  $.ajax(apppath + '/documents/' + short_key, {
     type: 'get',
     dataType: 'json',
     success: function(res) {
@@ -58,7 +66,7 @@ haste_document.prototype.save = function(data, callback) {
   }
   this.data = data;
   var _this = this;
-  $.ajax('/documents', {
+  $.ajax(apppath + '/documents', {
     type: 'post',
     data: data,
     dataType: 'json',
@@ -148,7 +156,7 @@ haste.prototype.newDocument = function(hideHistory) {
   this.$box.hide();
   this.doc = new haste_document();
   if (!hideHistory) {
-    window.history.pushState(null, this.appName, '/');
+    window.history.pushState(null, this.appName, apppath + '/');
   }
   this.setTitle();
   this.lightKey();
@@ -247,7 +255,7 @@ haste.prototype.lockDocument = function() {
       if (ret.language) {
         file += '.' + _this.lookupExtensionByType(ret.language);
       }
-      window.history.pushState(null, _this.appName + '-' + ret.key, file);
+      window.history.pushState(null, _this.appName + '-' + ret.key, apppath + file);
       _this.fullKey();
       _this.$textarea.val('').hide();
       _this.$box.show().focus();
@@ -302,7 +310,8 @@ haste.prototype.configureButtons = function() {
       },
       shortcutDescription: 'control + shift + r',
       action: function() {
-        window.location.href = '/raw/' + _this.doc.key;
+        var short_key = substringAfter(_this.doc.key,apppath);
+	window.location.href = apppath + '/raw' + short_key;
       }
     },
     {
